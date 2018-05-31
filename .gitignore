@@ -1,0 +1,10 @@
+# Binaries
+bin
+
+# Project tmp directories
+data/splits
+
+# Eclipse artifacts
+/.classpath
+/.project
+.settings
