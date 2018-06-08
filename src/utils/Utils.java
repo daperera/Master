@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This class provide utility methods
@@ -25,6 +26,7 @@ public class Utils {
 		}
 		return computerPool;
 	}
+	
 	
 	public static void printAssignment(Map<Integer, String> splitAssignment) {
 		for(Map.Entry<Integer, String> e : splitAssignment.entrySet()) {
@@ -137,6 +139,24 @@ public class Utils {
 			}
 		}
 	}
+
+	
+	public static <T> T min(Map<T, Integer> map) {
+		T minKey = null;
+		int minValue = 0;
+		for(Entry<T, Integer> e : map.entrySet()) {
+			if(minKey == null) {
+				minKey = e.getKey();
+				minValue = e.getValue();
+			}
+			else if(e.getValue() < minValue) {
+				minKey = e.getKey();
+				minValue = e.getValue();
+			}
+		}
+		return minKey;
+	}
+	
 	
 	
 	

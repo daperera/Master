@@ -20,5 +20,6 @@ public final class Config {
 	// algorithm default configuration
 	public static final int DEFAULT_CHUNK_SIZE = 3;
 	public static final String DEFAULT_INPUT_FILEPATH = "data/input/input";
+	public static final int DEFAULT_CHECKED_COMPUTER_BATCH_SIZE = 10;
 	
 }
