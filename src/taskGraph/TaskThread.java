@@ -2,19 +2,26 @@ package taskGraph;
 
 import java.util.concurrent.TimeUnit;
 
+import utils.Config;
+
 public class TaskThread extends AbstractTaskThread {
 	
-	private final static long TIME_OUT = 10000;
+	private final long timeOut;
 	private final Task task;
 	private final ThreadMessageListener errorListener;
 	
-	
-	public TaskThread(TaskNode taskNode, Task task, ResultDeliverer deliverer) {
+	public TaskThread(TaskNode taskNode, Task task, ResultDeliverer deliverer, long timeOut) {
 		super(taskNode, deliverer);
 		this.task = task;
+		this.timeOut = timeOut;
 		errorListener = new ThreadMessageListener();
 	}
+	
+	public TaskThread(TaskNode taskNode, Task task, ResultDeliverer deliverer) {
+		this(taskNode, task, deliverer, Config.DEFAULT_PROCESS_TIMEOUT);
+	}
 
+	
 	@Override
 	public void startTask(ThreadMessageListener listener) {
 		Process p = task.start();
@@ -22,10 +29,9 @@ public class TaskThread extends AbstractTaskThread {
 		errorListener.setInputStream(p.getErrorStream());
 		
 		try {
-			p.waitFor(TIME_OUT, TimeUnit.MILLISECONDS);
+			p.waitFor(timeOut, TimeUnit.MILLISECONDS);
 			int exitValue = p.exitValue();
 			if(exitValue==0) { // if the task succeeded
-				
 				// wait for all messages to have been receives by the ThreadMessageListner, if any
 				// WARNING : MOCK IMPLEMENTATION
 				try {
@@ -56,7 +62,7 @@ public class TaskThread extends AbstractTaskThread {
 		}
 		p.destroy(); // try to kill the process		
 		try {
-			p.waitFor(TIME_OUT, TimeUnit.MILLISECONDS); // give it a chance to stop
+			p.waitFor(timeOut, TimeUnit.MILLISECONDS); // give it a chance to stop
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} 

@@ -3,8 +3,6 @@ import java.util.List;
 import java.util.Map;
 
 import slaveHandler.SlaveHandlerFactory;
-import utils.Config;
-import utils.Utils;
 
 public class Master {
 

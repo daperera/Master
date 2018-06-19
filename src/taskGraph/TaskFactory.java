@@ -75,6 +75,8 @@ public class TaskFactory {
 	public void checkComputer(String computerID) {
 		TaskNodeBuilder.newBuilder()
 		.setManager(master)
+		.addRequiredResource(ResourceFactory.endComputer(computerID))
+		.setTimeOut(1000) // accelerate time out of process to check computer more rapidly
 		.assignTask(() -> { return CommandLineAdapter.checkConnectivity(computerID);})
 		.assignResultDeliverer(() -> {master.getComputerPool().setComputerAvailable(computerID);})
 		.build();

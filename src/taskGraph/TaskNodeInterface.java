@@ -8,4 +8,5 @@ public interface TaskNodeInterface {
 	public void assignTask(Task task, ResultDeliverer deliverer);
 	public boolean taskCompleted();
 	void assignTask(ProcesslessTask task, ResultDeliverer deliverer);
+	void assignTask(Task task, ResultDeliverer deliverer, long timeOut);
 }

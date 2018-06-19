@@ -1,14 +1,12 @@
-package utils;
+package master;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * This class provide utility methods
@@ -18,9 +16,9 @@ import java.util.Set;
 public class Utils {
 	
 	
-	public static Set<String> defaultComputerPool() {
+	public static List<String> defaultComputerPool() {
 		// read computer names in dedicated file
-		Set<String> computerPool = new HashSet<String>();
+		List<String> computerPool = new ArrayList<String>();
 		WordReader reader = new WordReader(Config.COMPUTER_POOL_FILENAME);
 		while(reader.hasNext()) { // for each computer name
 			String computerName = reader.next();

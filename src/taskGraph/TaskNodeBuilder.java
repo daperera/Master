@@ -11,6 +11,7 @@ public class TaskNodeBuilder {
 	private Task task;
 	private ProcesslessTask processlessTask;
 	private ResultDeliverer deliverer;
+	private long timeOut;
 	
 	public static TaskNodeBuilder newBuilder() {
 		return new TaskNodeBuilder();
@@ -19,6 +20,7 @@ public class TaskNodeBuilder {
 	public TaskNodeBuilder() {
 		node = new TaskNode(null);
 		hasPreviousNode = false;
+		timeOut = 0;
 	}
 	
 	public TaskNodeBuilder setManager(GraphManager manager) {
@@ -75,8 +77,13 @@ public class TaskNodeBuilder {
 		return this;
 	}
 	
+	public TaskNodeBuilder setTimeOut(long timeOut) {
+		this.timeOut = timeOut;
+		return this;
+	}
+	
 	public TaskNode build() {
-		// if deliverer not defined
+		// if no deliverer has been set
 		if(deliverer == null) {
 			deliverer = new ResultDeliverer() {
 				@Override
@@ -87,11 +94,15 @@ public class TaskNodeBuilder {
 		
 		// assign task
 		if(task != null) {
-			node.assignTask(task, deliverer);
+			if(timeOut<=0) { // if no timeOut set or erroneous timeOut set
+				node.assignTask(task, deliverer);
+			} else {
+				node.assignTask(task, deliverer, timeOut);
+			}
 		} else if(processlessTask != null) {
 			node.assignTask(processlessTask, deliverer);
 		}
-		else {
+		else { // if no task has been set
 			node.assignTask((l)->{return;}, deliverer);
 		}
 		

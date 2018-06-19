@@ -1,4 +1,4 @@
-package utils;
+package master;
 
 public final class Config {
 	

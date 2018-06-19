@@ -33,6 +33,11 @@ public class TaskNode implements TaskNodeInterface {
 	}
 	
 	@Override
+	public void assignTask(Task task, ResultDeliverer deliverer, long timeOut) {
+		taskThread = new TaskThread(this, task, deliverer, timeOut);
+	}
+	
+	@Override
 	public void assignTask(Task task, ResultDeliverer deliverer) {
 		taskThread = new TaskThread(this, task, deliverer);
 	}

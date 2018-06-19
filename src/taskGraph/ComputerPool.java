@@ -3,8 +3,8 @@ package taskGraph;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import utils.Config;
 import utils.Utils;
@@ -23,7 +23,7 @@ public class ComputerPool {
 		reachableComputer = new HashMap<String, Integer>();
 		
 		// build availableComputer list
-		List<String> availableComputer = Utils.defaultComputerPool();
+		Set<String> availableComputer = Utils.defaultComputerPool();
 		
 		// build toCheckComputer queue
 		toCheckComputer = new LinkedList<String>();
@@ -49,10 +49,14 @@ public class ComputerPool {
 	}
 	
 	public void notifyComputerCrash(String computerID) {
-		System.out.println("computer crashed : " + computerID);
+		System.err.println("computer crashed : " + computerID);
 		
+		// consider computer as not reachable anymore, and add it to the toCheck list of computers
 		reachableComputer.remove(computerID);
 		toCheckComputer.addLast(computerID);
+		
+		// check next computer
+		checkNextComputer();
 	}
 
 	public void setComputerAvailable(String computerID) {
@@ -66,13 +70,16 @@ public class ComputerPool {
 	}
 	
 	private void checkNextComputer() {
+		// if already reached the max number of computer used in parallel
+		if(reachableComputer.size() >= Config.DEFAULT_PARALLEL_COMPUTER_NUMBER) 
+			return; // stop looking for more
+		// else, if there is some computer left in the toCheck list, check them
 		if(!toCheckComputer.isEmpty()) {
-			String computerId = toCheckComputer.getFirst();
+			String computerId = toCheckComputer.pollFirst();
 			
 			System.err.println("checking computer : " + computerId);
 	
 			taskFactory.checkComputer(computerId);
-			toCheckComputer.remove(computerId);
 		}
 	}
 }
