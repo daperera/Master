@@ -16,11 +16,6 @@ public class ComputerCollector implements ResourceVisitor {
 	}
 	
 	@Override
-	public void visitEndComputer(EndComputer computer) {
-		computers.add(computer);
-	}
-
-	@Override
 	public void visitComputer(Computer computer) {
 		computers.add(computer);
 	}

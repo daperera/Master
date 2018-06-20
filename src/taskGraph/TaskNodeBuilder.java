@@ -7,24 +7,29 @@ import taskGraph.resource.Resource;
 public class TaskNodeBuilder {
 	
 	private final TaskNode node;
-	private boolean hasPreviousNode;
 	private Task task;
 	private ProcesslessTask processlessTask;
 	private ResultDeliverer deliverer;
 	private long timeOut;
+	private ResourceTracker tracker;
 	
 	public static TaskNodeBuilder newBuilder() {
 		return new TaskNodeBuilder();
 	}
 	
 	public TaskNodeBuilder() {
-		node = new TaskNode(null);
-		hasPreviousNode = false;
+		node = new TaskNode(null, null);
 		timeOut = 0;
 	}
 	
 	public TaskNodeBuilder setManager(GraphManager manager) {
 		node.setGraphManager(manager);
+		return this;
+	}
+	
+	public TaskNodeBuilder setResourceTracker(ResourceTracker tracker) {
+		node.setResourceTracker(tracker);
+		this.tracker = tracker;
 		return this;
 	}
 	
@@ -45,7 +50,13 @@ public class TaskNodeBuilder {
 	}
 	
 	public TaskNodeBuilder assignResultDeliverer(TaskNodeConsumer deliverer) {
-		assignResultDeliverer(node ->  {deliverer.accept(node);});
+//		assignResultDeliverer(node ->  {deliverer.accept(node);});
+		this.deliverer = new ResultDeliverer() {
+			@Override
+			public void deliverResult(TaskNode parentNode, List<String> messages) {
+				deliverer.accept(parentNode);
+			}
+		};
 		return this;
 	}
 	
@@ -55,20 +66,22 @@ public class TaskNodeBuilder {
 	}
 	
 	
-	
+	/*
 	public TaskNodeBuilder assignPreviousNode(TaskNodeInterface node) {
 		this.node.assignPreviousNode(node);
-		hasPreviousNode = true;
 		return this;
 	}
 
 	public TaskNodeBuilder assignNextNode(TaskNodeInterface node) {
 		this.node.assignNextNode(node);
 		return this;
-	}
+	}*/
 	
 	public TaskNodeBuilder addRequiredResource(Resource resource) {
 		node.addRequiredResource(resource);
+		if(tracker != null) {
+			tracker.addRequiredResource(node, resource);
+		}
 		return this;
 	}
 	
@@ -107,8 +120,8 @@ public class TaskNodeBuilder {
 		}
 		
 		// start task
-		if(!hasPreviousNode)
-			node.forceStart();
+		node.forceStart();
+
 		return node;
 	}
 	

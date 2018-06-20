@@ -1,27 +1,28 @@
 package taskGraph.resource;
 
-public class SplitFile extends File {
-
-	public SplitFile(String ID) {
+public class ReduceFile extends File{
+	
+	
+	public ReduceFile(int ID) {
 		super(ID);
 	}
 	
-	public SplitFile(int ID) {
+	public ReduceFile(String ID) {
 		super(ID);
 	}
 	
 	@Override
 	public void visit(ResourceVisitor visitor) {
-		visitor.visitSplitFile(this);
+		visitor.visitReduceFile(this);
 	}
 	
 	@Override
 	public boolean equals(Object other) {
 		if(other==null)
 			return false;
-		if(other.getClass()!=SplitFile.class)
+		if(other.getClass()!=ReduceFile.class)
 			return false;
-		return ID.equals(((Resource) other).ID);
+		return ID.equals(((ReduceFile) other).ID);
 	}
 	
 	@Override

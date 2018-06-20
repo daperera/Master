@@ -15,4 +15,18 @@ public class MapFile extends File {
 		visitor.visitMapFile(this);
 	}
 	
+	@Override
+	public boolean equals(Object other) {
+		if(other==null)
+			return false;
+		if(other.getClass()!=MapFile.class)
+			return false;
+		return ID.equals(((Resource) other).ID);
+	}
+	
+	@Override
+	public int hashCode() {
+	    return 1;
+	}
+	
 }

@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import taskGraph.ComputerPool;
+
 /**
  * This class provide utility methods
  *
@@ -38,7 +40,7 @@ public class Utils {
 		}
 	}
 	
-	public static void printKeys(Map<Integer, List<String>> keyMap) {
+	public static void printKeyAssignment(Map<Integer, List<String>> keyMap) {
 		for(Map.Entry<Integer, List<String>> e : keyMap.entrySet()) {
 			int mapID = e.getKey();
 			List<String> keys = e.getValue();
@@ -159,7 +161,34 @@ public class Utils {
 		return minKey;
 	}
 	
+	public static String getAvailableComputer(ComputerPool pool) {
+		String computerID = null;
+		while((computerID = pool.getAvailableComputer()) == null) {
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return computerID;
+	}
 	
-	
-	
+	public static boolean waitUntilNComputerReady(ComputerPool pool, int n) {
+		while(pool.getReachableComputerNb() < n) {
+//			System.out.println("still waiting : only " + pool.getReachableComputerNb() + " computer available");
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+
+
+	public static void printKeys(List<String> keys) {
+		for(String key : keys) {
+			System.out.println("key found : " + key);
+		}
+	}
 }

@@ -14,12 +14,16 @@ public interface ResourceVisitor {
 		return; // do nothing
 	}
 
-	public default void visitEndComputer(EndComputer resource) {
+	public default void visitComputer(Computer resource) {
 		return; // do nothing
 	}
 
-	public default void visitComputer(Computer resource) {
-		return; // do nothing
+	public default void visitReduceFile(ReduceFile reduceFile) {
+		return;
+	}
+
+	public default void visitReduceTmpFile(ReduceTmpFile reduceTmpFile) {
+		return;
 	}
 	
 }

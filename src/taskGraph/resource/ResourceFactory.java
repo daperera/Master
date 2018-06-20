@@ -8,8 +8,8 @@ public class ResourceFactory {
 		return new SplitFile(splitID);
 	}
 
-	public static Resource endComputer(String computerID) {
-		return new EndComputer(computerID);
+	public static Resource computer(String computerID) {
+		return new Computer(computerID);
 	}
 
 	public static Resource mapFile(int mapID) {
@@ -18,6 +18,14 @@ public class ResourceFactory {
 	
 	public static Set<Computer> collectComputer(Set<Resource> resources) {
 		return new ComputerCollector().collect(resources);
+	}
+
+	public static Resource reduceTmpFile(int reduceID, String computerID) {
+		return new ReduceTmpFile(reduceID, computerID);
+	}
+	
+	public static Resource reduceFile(int reduceID) {
+		return new ReduceFile(reduceID);
 	}
 	
 	

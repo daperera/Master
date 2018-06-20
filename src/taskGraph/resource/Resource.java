@@ -1,7 +1,7 @@
 package taskGraph.resource;
 
 public abstract class Resource {
-	private final String ID;
+	protected final String ID;
 	
 	public Resource(String ID) {
 		this.ID = ID;
@@ -11,10 +11,16 @@ public abstract class Resource {
 		return ID;
 	}
 	
-	public boolean equals(Resource other) {
+	@Override
+	public boolean equals(Object other) {
 		if(other==null)
 			return false;
-		return ID.equals(other.ID);
+		return ID.equals(((Resource) other).ID);
+	}
+	
+	@Override
+	public int hashCode() {
+	    return 1;
 	}
 	
 	public abstract void visit(ResourceVisitor visitor);

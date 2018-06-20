@@ -42,6 +42,7 @@ public class TaskThread extends AbstractTaskThread {
 				// WARNING : END MOCK IMPLEMENTATION
 				
 				deliverer.deliverResult(manager, listener.getMessages());
+				manager.notifyCompletion();
 			}
 			else {
 				notifyProcessCrash(p);

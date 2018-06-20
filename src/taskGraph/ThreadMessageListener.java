@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadMessageListener extends Thread {
-	List<String> messages;
-	BufferedReader reader;
-	
+	private volatile List<String> messages;
+	private BufferedReader reader;
+
 	public ThreadMessageListener() {
 		messages = new ArrayList<String>();
 		reader = null;
@@ -19,26 +19,36 @@ public class ThreadMessageListener extends Thread {
 	public void setInputStream(InputStream in) {
 		reader = new BufferedReader(new InputStreamReader(in));
 	}
-	
+
 	@Override
 	public void run() {
 		while(true) {
-			String message;
 			try {
-				message = reader.readLine();
-				if(message != null) {
-					messages.add(message);
-//					System.out.println("message : " + message);
-				}
+				readMessage();
 				Thread.sleep(200);
-			} catch (IOException | InterruptedException e1) {
-				e1.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 
 		}
 	}
-	
+
+	private void readMessage() {
+		try {
+			if(reader != null) {
+				String message = reader.readLine();
+				if(message != null) {
+					messages.add(message);
+//					System.out.println("message : " + message);
+				}
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public List<String> getMessages() {
+		readMessage(); // forcing message Read
 		return messages;
 	}
 
