@@ -1,11 +1,11 @@
-package taskGraph;
+ package taskGraph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import master.Config;
+import utils.Config;
 import utils.Utils;
 
 public class Master implements GraphManager {
@@ -35,10 +35,10 @@ public class Master implements GraphManager {
 	// MAP synchronisation point
 	
 	public void deliverMapKey(int mapID, String computerID, List<String> messages) {
-		
 		for(String key : messages) {
 			// actualize list of keys
-			keys.add(key);
+			if(!keys.contains(key))
+				keys.add(key);
 			
 			// actualize invertedKeyMap
 			Map<String, List<Integer>> computerMapping = invertedKeyMap.get(key);
@@ -61,13 +61,23 @@ public class Master implements GraphManager {
 	public void notifyAllKeyCollected() {
 		System.out.println("Printing keys");
 		Utils.printKeys(keys);
+		for(String key : keys) {
+			for(Map.Entry<String, List<Integer>> e : invertedKeyMap.get(key).entrySet()) {
+				System.out.print(key + " -> " + e.getKey() + " :");
+				for(Integer i : e.getValue()) {
+					System.out.print(" " + i);
+				}
+				System.out.println("");
+			}
+		}
+		
 		taskFactory.shuffle(keys, invertedKeyMap);
 	}
 	
 	// Algorithm result
 	
 	public void deliverReduceResult(int reduceID, List<String> messages) {
-		System.out.print("reduce file " + reduceID + ": ");
+		System.out.print(keys.get(reduceID) + " : ");
 		for(String s : messages) {
 			System.out.print(s);
 		}

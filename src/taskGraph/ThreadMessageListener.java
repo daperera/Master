@@ -25,7 +25,7 @@ public class ThreadMessageListener extends Thread {
 		while(true) {
 			try {
 				readMessage();
-				Thread.sleep(200);
+				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

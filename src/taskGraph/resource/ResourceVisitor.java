@@ -25,5 +25,9 @@ public interface ResourceVisitor {
 	public default void visitReduceTmpFile(ReduceTmpFile reduceTmpFile) {
 		return;
 	}
+
+	public default void visitReduceTmp2File(ReduceTmp2File reduceTmp2File) {
+		return;
+	}
 	
 }

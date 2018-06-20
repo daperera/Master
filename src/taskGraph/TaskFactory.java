@@ -92,10 +92,8 @@ public class TaskFactory {
 	public void shuffle(List<String> keys, Map<String, Map<String, List<Integer>>> invertedKeyMap) {
 		System.err.println("Starting shuffle");
 		for(String key : keys) {
-			System.err.println("so there are keys");
 			Map<String, List<Integer>> computerMapping = invertedKeyMap.get(key);
 			for(Map.Entry<String, List<Integer>> e : computerMapping.entrySet()) {
-				System.err.println("so there even are computer associated to keys");
 				String sourceComputerID = e.getKey();
 				List<Integer> mapIDs = e.getValue();
 				int reduceId = keys.indexOf(key);
@@ -108,6 +106,20 @@ public class TaskFactory {
 
 	}
 
+	/**
+	 * Cette fonction démarre un shuffle slave qui parcourt les fichiers map
+	 * d'identifiants mapIDs à la recherche des valeurs associées à la clé key.
+	 * Il réunit ces valeurs en une liste qu'il écrit dans le fichier reduce
+	 * d'identifiant reduceID
+	 * 
+	 * Remarque : Cette fonction suppose que le dossier reduce a déjà été créé
+	 * Le programme Deploy se charge de cette création (le cas échéant).
+	 * 
+	 * @param computerID : le nom de l'ordinateur destination 
+	 * @param key : la clé dont on rassemble les valeurs
+	 * @param reduceID l'identifiant reduce (pour le nom du fichier sortie)
+	 * @param mapIDs : les identifiants des fichiers map lus par le shuffle slave
+	 */
 	private TaskNode keyExtraction(String computerID, String key, int reduceID, List<Integer> mapIDs) {
 		TaskNodeBuilder builder = TaskNodeBuilder.newBuilder()
 				.setResourceTracker(tracker)
@@ -120,6 +132,15 @@ public class TaskFactory {
 		return builder.build();
 	}
 
+	
+	/**
+	 * Cette fonction copie le fichier reduce d'identifiant reduceID et situé sur l'ordinateur
+	 * sourceComputerID sur l'ordinateur tartgetComputerId dans le dossier tmp dédié.
+	 * 
+	 * @param reduceID : identifiant du fichier reduce source
+	 * @param sourceComputerID : identifiant de l'ordinateur source
+	 * @param targetComputerID : identifiant de l'ordinateur destination
+	 */
 	private TaskNode gatherReduceFile(int reduceID, String sourceComputerID, String targetComputerID) {
 		TaskNode node =TaskNodeBuilder.newBuilder()
 				.setResourceTracker(tracker)
@@ -127,18 +148,27 @@ public class TaskFactory {
 				.addRequiredResource(ResourceFactory.computer(sourceComputerID))
 				.addRequiredResource(ResourceFactory.computer(targetComputerID))
 				.addRequiredResource(ResourceFactory.reduceTmpFile(reduceID, sourceComputerID))
-				.addProducedResource(ResourceFactory.reduceTmpFile(reduceID, targetComputerID))
+				.addProducedResource(ResourceFactory.reduceTmp2File(reduceID, targetComputerID))
 				.assignTask(() -> { return CommandLineAdapter.gatherReduceFiles(reduceID, sourceComputerID, targetComputerID); })
 				.build();
 		return node;
 	}
 
+	/**
+	 * Cette fonction concatene tous les fichiers reduce du dossier temporaire
+	 * de l'ordinateur computer et d'identifiant reduceID en un seul
+	 * 
+	 * @param reduceID : identifiant des fichiers reduce concatenés
+	 * @param computerID : identifiant de l'ordinateur sur lequel les fichiers
+	 * 	                   reduce d'identifiants reduceID ont préalablement été
+	 * 					   rassemblés
+	 */
 	private TaskNode concatenateReduceFiles(int reduceID, String computerID) {
 		TaskNode node =TaskNodeBuilder.newBuilder()
 				.setResourceTracker(tracker)
 				.setManager(master)
 				.addRequiredResource(ResourceFactory.computer(computerID))
-				.addRequiredResource(ResourceFactory.reduceTmpFile(reduceID, computerID))
+				.addRequiredResource(ResourceFactory.reduceTmp2File(reduceID, computerID))
 				.addProducedResource(ResourceFactory.reduceFile(reduceID))
 				.assignTask(() -> { return CommandLineAdapter.concatenateReduceFiles(reduceID, computerID); })
 				.assignResultDeliverer(() -> {reduce(reduceID, computerID);})

@@ -35,7 +35,7 @@ public class TaskThread extends AbstractTaskThread {
 				// wait for all messages to have been receives by the ThreadMessageListner, if any
 				// WARNING : MOCK IMPLEMENTATION
 				try {
-					Thread.sleep(500);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

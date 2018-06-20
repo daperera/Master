@@ -27,6 +27,10 @@ public class ResourceFactory {
 	public static Resource reduceFile(int reduceID) {
 		return new ReduceFile(reduceID);
 	}
+
+	public static Resource reduceTmp2File(int reduceID, String computerID) {
+		return new ReduceTmp2File(reduceID, computerID);
+	}
 	
 	
 }

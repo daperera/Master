@@ -19,6 +19,7 @@ public abstract class AbstractTaskThread extends Thread {
 	@Override
 	public final void run() {
 		listener = new ThreadMessageListener();
+		listener.start();
 		startTask(listener);
 	}
 	
